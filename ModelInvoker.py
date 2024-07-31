@@ -4,29 +4,33 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 from PIL import Image
 
-# Load the model and allocate tensors
-interpreter = tf.lite.Interpreter(model_path="crop_classifier_model.tflite")
-interpreter.allocate_tensors()
+# Function to load the TensorFlow Lite model
+def load_model(model_path):
+    interpreter = tf.lite.Interpreter(model_path=model_path)
+    interpreter.allocate_tensors()
+    return interpreter
 
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
+# Function to get class labels based on the selected model
+def get_class_labels(model_selection):
+    if model_selection == "Wheat and Maize":
+        return {0: 'Wheat', 1: 'Maize'}
+    elif model_selection == "Wheat, Maize, Cotton, and Gram":
+        return {0: 'Wheat', 1: 'Maize', 2: 'Cotton', 3: 'Gram'}
 
-# Updated class labels to include Cotton and Gram
-class_labels = {
-    0: 'Wheat',
-    1: 'Maize',
-    2: 'Cotton',
-    3: 'Gram'
-}
+# Function to prepare the image for the model
+def prepare_image(image, model_selection):
+    if model_selection == "Wheat and Maize":
+        image_size = (150, 150)
+    else:
+        image_size = (224, 224)
 
-def prepare_image(image):
-    image = image.resize((224, 224))
+    image = image.resize(image_size)
     image = img_to_array(image)
     image = np.expand_dims(image, axis=0)
     image = image / 255.0
     return image.astype(np.float32)
 
-# Theme switcher
+# Sidebar for theme selection
 theme = st.sidebar.radio("Choose Theme", ("Light", "Dark"))
 
 if theme == "Dark":
@@ -65,7 +69,7 @@ if theme == "Dark":
         }
         </style>
         """, unsafe_allow_html=True)
-    title_color = "#ffffff"  # White text for dark mode
+    title_color = "#ffffff"
 else:
     st.markdown("""
         <style>
@@ -102,19 +106,39 @@ else:
         }
         </style>
         """, unsafe_allow_html=True)
-    title_color = "#000000"  # Black text for light mode
+    title_color = "#000000"
 
 # Main content
 st.markdown(f"<h1 style='color: {title_color};'>🌾 Crop Classifier 🌾</h1>", unsafe_allow_html=True)
 st.write("Upload an image to classify the crop type.")
 
+# Model selection
+model_selection = st.sidebar.selectbox(
+    "Choose the model",
+    ("Wheat and Maize", "Wheat, Maize, Cotton, and Gram")
+)
+
+if model_selection == "Wheat and Maize":
+    model_path = "crop_classifier_model_wheat_maize.tflite"
+else:
+    model_path = "crop_classifier_model_wheat_maize_cotton_gram.tflite"
+
+# Load the selected model
+interpreter = load_model(model_path)
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+
+# Get the class labels based on the model
+class_labels = get_class_labels(model_selection)
+
+# File uploader for image upload
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
     st.image(image, caption='Uploaded Image', use_column_width=True)
 
-    prepared_image = prepare_image(image)
+    prepared_image = prepare_image(image, model_selection)
     interpreter.set_tensor(input_details[0]['index'], prepared_image)
 
     interpreter.invoke()
@@ -125,10 +149,10 @@ if uploaded_file is not None:
 
     st.write(f"🚀 The predicted class of crop is: **{predicted_class}**")
 
-# Sidebar
+# Sidebar information
 st.sidebar.title("🌟 About the Project")
-st.sidebar.write("""
-This project uses a machine learning model to classify images of crops into four categories: **Wheat**, **Maize**, **Cotton**, and **Gram**.
+st.sidebar.write(f"""
+This project uses a machine learning model to classify images of crops into the selected categories.
 
 Created by **Pranav Lejith (Amphibiar)**.
                  
@@ -145,6 +169,6 @@ For the best results, please ensure the wheat images include the stem to avoid c
 st.sidebar.title("🛠️ Functionality")
 st.sidebar.write("""
 This AI model works by using a convolutional neural network (CNN) to analyze images of crops. 
-The model has been trained on labeled images of Wheat, Maize, Cotton, and Gram to learn the distinctive features of each crop. 
+The model has been trained on labeled images of the selected crops to learn the distinctive features of each crop. 
 When you upload an image, the model processes it and predicts the crop type based on the learned patterns.
 """)
