@@ -149,26 +149,55 @@ if uploaded_file is not None:
 
     st.write(f"🚀 The predicted class of crop is: **{predicted_class}**")
 
-# Sidebar information
-st.sidebar.title("🌟 About the Project")
-st.sidebar.write(f"""
-This project uses a machine learning model to classify images of crops into the selected categories.
+# Sidebar content
+with st.sidebar:
+    st.markdown("### ℹ️ Info")
+    with st.expander("Model Accuracy Information"):
+        st.write("""
+        <style>
+        .dataframe {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .dataframe th, .dataframe td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .dataframe th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        </style>
+        """, unsafe_allow_html=True)
 
-Created by **Pranav Lejith (Amphibiar)**.
+        st.write("""
+        The following table provides information about the accuracy of the models:
+
+        | Model                               | Accuracy       | Crops |
+        |-------------------------------------|----------------|-------|
+        | Wheat and Maize                     | Medium         | 2     |
+        | Wheat, Maize, Cotton, and Gram      | High           | 4     |
+        """, unsafe_allow_html=True)
+
+    st.sidebar.title("🌟 About the Project")
+    st.sidebar.write(f"""
+    This project uses a machine learning model to classify images of crops into the selected categories.
+
+    Created by **Pranav Lejith (Amphibiar)**.
                  
-Created for AI Project.
-""")
+    Created for AI Project.
+    """)
 
-st.sidebar.title("💡 Note")
-st.sidebar.write("""
-This model is still in development and may not always be accurate. 
+    st.sidebar.title("💡 Note")
+    st.sidebar.write("""
+    This model is still in development and may not always be accurate. 
 
-For the best results, please ensure the wheat images include the stem to avoid confusion with maize.
-""")
+    For the best results, please ensure the wheat images include the stem to avoid confusion with maize.
+    """)
 
-st.sidebar.title("🛠️ Functionality")
-st.sidebar.write("""
-This AI model works by using a convolutional neural network (CNN) to analyze images of crops. 
-The model has been trained on labeled images of the selected crops to learn the distinctive features of each crop. 
-When you upload an image, the model processes it and predicts the crop type based on the learned patterns.
-""")
+    st.sidebar.title("🛠️ Functionality")
+    st.sidebar.write("""
+    This AI model works by using a convolutional neural network (CNN) to analyze images of crops. 
+    The model has been trained on labeled images of the selected crops to learn the distinctive features of each crop. 
+    When you upload an image, the model processes it and predicts the crop type based on the learned patterns.
+    """)
