@@ -31,7 +31,7 @@ def prepare_image(image, model_selection):
     return image.astype(np.float32)
 
 # Sidebar for theme selection
-theme = st.sidebar.radio("Choose Theme", ("Light", "Dark"))
+theme = st.sidebar.radio("Choose Theme", ("Dark", "Light"))
 
 if theme == "Dark":
     st.markdown("""
@@ -151,7 +151,7 @@ if uploaded_file is not None:
 
 # Sidebar content
 with st.sidebar:
-    st.markdown("### ℹ️ Info")
+    st.markdown("### :blue[ℹ️ Info]")
     with st.expander("Model Accuracy Information"):
         st.write("""
         <style>
@@ -179,23 +179,23 @@ with st.sidebar:
         | Wheat, Maize, Cotton, and Gram      | High           | 4     |
         """, unsafe_allow_html=True)
 
-    st.sidebar.title("🌟 About the Project")
+    st.sidebar.title("🌟 :red[About the Project]")
     st.sidebar.write(f"""
     This project uses a machine learning model to classify images of crops into the selected categories.
 
-    Created by **Pranav Lejith (Amphibiar)**.
+    Created by **:red[Pranav Lejith] :green[(]:violet[Amphibiar]:blue[)]**  .
                  
-    Created for AI Project.
+    Created for :orange[AI Project].
     """)
-
-    st.sidebar.title("💡 Note")
+    # st.sidebar.info('Created by **:red[Pranav Lejith (Amphibiar)]**  .')
+    st.sidebar.title("💡 :violet[Note]")
     st.sidebar.write("""
     This model is still in development and may not always be accurate. 
 
-    For the best results, please ensure the wheat images include the stem to avoid confusion with maize.
+    For the best results, please ensure the wheat images include the stem to avoid confusion with maize. Also make sure that the images of cotton have leaves to avoid confusion with other crops.                     
     """)
 
-    st.sidebar.title("🛠️ Functionality")
+    st.sidebar.title("🛠️ :orange[Functionality]")
     st.sidebar.write("""
     This AI model works by using a convolutional neural network (CNN) to analyze images of crops. 
     The model has been trained on labeled images of the selected crops to learn the distinctive features of each crop. 
