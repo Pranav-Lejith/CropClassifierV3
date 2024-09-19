@@ -1,23 +1,25 @@
+#Created by Pranav Lejith (Amphibiar)
+
 import streamlit as st
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 from PIL import Image
 
-# Function to load the TensorFlow Lite model
+
 def load_model(model_path):
     interpreter = tf.lite.Interpreter(model_path=model_path)
     interpreter.allocate_tensors()
     return interpreter
 
-# Function to get class labels based on the selected model
+
 def get_class_labels(model_selection):
     if model_selection == "Wheat and Maize":
         return {0: 'Wheat', 1: 'Maize'}
     elif model_selection == "Wheat, Maize, Cotton, and Gram":
         return {0: 'Wheat', 1: 'Maize', 2: 'Cotton', 3: 'Gram'}
 
-# Function to prepare the image for the model
+
 def prepare_image(image, model_selection):
     if model_selection == "Wheat and Maize":
         image_size = (150, 150)
@@ -30,7 +32,7 @@ def prepare_image(image, model_selection):
     image = image / 255.0
     return image.astype(np.float32)
 
-# Sidebar for theme selection
+
 theme = st.sidebar.radio("Choose Theme", ("Dark", "Light"))
 
 if theme == "Dark":
@@ -108,11 +110,10 @@ else:
         """, unsafe_allow_html=True)
     title_color = "#000000"
 
-# Main content
+
 st.markdown(f"<h1 style='color: {title_color};'>🌾 Crop Classifier 🌾</h1>", unsafe_allow_html=True)
 st.write("Upload an image to classify the crop type.")
 
-# Model selection
 model_selection = st.sidebar.selectbox(
     "Choose the model",
     ("Wheat and Maize", "Wheat, Maize, Cotton, and Gram")
@@ -123,15 +124,12 @@ if model_selection == "Wheat and Maize":
 else:
     model_path = "crop_classifier_model_wheat_maize_cotton_gram.tflite"
 
-# Load the selected model
 interpreter = load_model(model_path)
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
-# Get the class labels based on the model
 class_labels = get_class_labels(model_selection)
 
-# File uploader for image upload
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
@@ -149,7 +147,6 @@ if uploaded_file is not None:
 
     st.write(f"🚀 The predicted class of crop is: **{predicted_class}**")
 
-# Sidebar content
 with st.sidebar:
     st.markdown("### :blue[ℹ️ Info]")
     with st.expander("Model Accuracy Information"):
